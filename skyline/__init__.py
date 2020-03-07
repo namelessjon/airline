@@ -546,8 +546,13 @@ class Event:
     def __init__(self, data={}, created_at=datetime.datetime.utcnow(), client=_SKL):
         self._data = {}
         self._client = client
-        self.sample_rate = client.sample_rate
-        self.dataset = client.dataset
+
+        if client:
+            self.sample_rate = client.sample_rate
+            self.dataset = client.dataset
+        else:
+            self.sample_rate = 1
+            self.dataset = ''
         self.created_at = created_at
         self.add(data=data)
 
