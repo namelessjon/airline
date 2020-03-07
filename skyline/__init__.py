@@ -320,6 +320,8 @@ class Tracer(object):
         is_root = len(self._trace.stack) == 0
         span = Span(trace_id=self._trace.id, parent_id=parent_span_id,
                     id=span_id, event=ev, is_root=is_root)
+        if not is_root:
+            self._trace.stack[-1].add_child(span)
         self._trace.stack.append(span)
 
         return span
@@ -341,6 +343,9 @@ class Tracer(object):
                 for k, v in span.rollup_fields.items():
                     span.event.add_field(k, v)
 
+                if span._children:
+                    span.event.add_field('spans', [c.event for c in span._children])
+
                 # propagate trace fields that may have been added in later spans
                 for k, v in self._trace.fields.items():
                     # don't overwrite existing values because they may be different
@@ -351,7 +356,6 @@ class Tracer(object):
             duration_ms = duration.total_seconds() * 1000.0
             span.event.add_field('duration_ms', duration_ms)
 
-            self._run_hooks_and_send(span)
         else:
             _log('warning: span has no event, was it initialized correctly?')
 
@@ -377,6 +381,7 @@ class Tracer(object):
     def finish_trace(self, span):
         self.finish_span(span)
         self._trace = None
+        self._run_hooks_and_send(span)
 
     def get_active_trace_id(self):
         if self._trace:
@@ -495,6 +500,10 @@ class Span(object):
         self.event.start_time = datetime.datetime.now()
         self.rollup_fields = defaultdict(float)
         self._is_root = is_root
+        self._children = []
+
+    def add_child(self, child):
+        self._children.append(child)
 
     def add_context_field(self, name, value):
         self.event.add_field(name, value)
@@ -588,9 +597,11 @@ class Client():
             "dataset": ev.dataset,
             "data": ev.fields(),
         }
-        print(json.dumps(payload, default=_json_default_handler) + "\n", file=sys.stderr)
+        print(json.dumps(payload, indent=2, default=_json_default_handler) + "\n", file=sys.stderr)
 
 def _json_default_handler(obj):
+    if isinstance(obj, Event):
+        return obj.fields()
     try:
         return str(obj)
     except TypeError:
