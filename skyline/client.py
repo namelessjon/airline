@@ -80,7 +80,11 @@ class Client():
             print(message % args)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(dataset={self.dataset!r}, debug={self.debug!r})"
+        return "{cls}(dataset={dataset!r}, debug={debug!r})".format(
+            cls=self.__class__.__name__,
+            dataset=self.dataset,
+            debug=self.debug,
+        )
 
 
 def _json_default_handler(obj):
