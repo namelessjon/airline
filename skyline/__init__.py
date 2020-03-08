@@ -21,7 +21,7 @@ def init(dataset=''):
 def add_context(data):
     '''Similar to add_context_field(), but allows you to add a number of name:value pairs
     to the currently active event at the same time.
-    `beeline.add_context({ "first_field": "a", "second_field": "b"})`
+    `skyline.add_context({ "first_field": "a", "second_field": "b"})`
     Args:
     - `data`: dictionary of field names (strings) to field values to add
     '''
@@ -32,7 +32,7 @@ def add_context_field(name, value):
     ''' Add a field to the currently active event. For example, if you are
     using django and wish to add additional context to the current request
     before it is sent:
-    `beeline.add_context_field("my field", "my value")`
+    `skyline.add_context_field("my field", "my value")`
     Args:
     - `name`: Name of field to add
     - `value`: Value of new field
@@ -43,8 +43,8 @@ def add_context_field(name, value):
 def remove_context_field(name):
     ''' Remove a single field from the current span.
     ```
-    beeline.add_context({ "first_field": "a", "second_field": "b"})
-    beeline.remove_context_field("second_field")
+    skyline.add_context({ "first_field": "a", "second_field": "b"})
+    skyline.remove_context_field("second_field")
     Args:
     - `name`: Name of field to remove
     ```
@@ -54,13 +54,8 @@ def remove_context_field(name):
         _SKL.remove_context_field(name=name)
 
 def add_rollup_field(name, value):
-    ''' AddRollupField adds a key/value pair to the current span. If it is called repeatedly
-    on the same span, the values will be summed together.  Additionally, this
-    field will be summed across all spans and added to the trace as a total. It
-    is especially useful for doing things like adding the duration spent talking
-    to a specific external service - eg database time. The root span will then
-    get a field that represents the total time spent talking to the database from
-    all of the spans that are part of the trace.
+    ''' AddRollupField adds a key/value pair to the current event. If it is called repeatedly
+    on the same event, the values will be summed together.
     Args:
     - `name`: Name of field to add
     - `value`: Numeric (float) value of new field
@@ -71,6 +66,13 @@ def add_rollup_field(name, value):
 
 @contextmanager
 def timer(name):
+    """ Timer yields block (think `with` statement) and counts the time
+     taken during that block.  The time is added to the event.  If there
+     are multiple invocations with the same name, these will be added up
+     over the whole event.
+    It is especially useful for doing things like adding the duration spent talking
+    to a specific external service - eg database time
+    """
     if _SKL and _SKL._event:
         with _SKL._event.add_timer_field(name):
             yield
@@ -87,7 +89,10 @@ def done():
     _SKL = None
 
 def evented():
-    """Implementation of the traced decorator without async support."""
+    """Decorator for wrapping a generic function in an event.
+    
+    The event will be sent when the function ends, possibly annotated with
+    any exception raised."""
     def wrapped(fn):
         @functools.wraps(fn)
         def inner(*args, **kwargs):
