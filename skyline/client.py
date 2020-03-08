@@ -8,7 +8,7 @@ from .version import __version__
 
 
 class Client():
-    def __init__(self, dataset, debug=True):
+    def __init__(self, dataset, debug=False):
         self.dataset = dataset
         self.debug = debug
 
@@ -68,11 +68,19 @@ class Client():
             "client": "skyline/" + __version__,
             "data": dots_to_deep(ev.fields()),
         }
-        print(json.dumps(payload, indent=2, default=_json_default_handler) + "\n", file=sys.stderr)
+        if self.debug:
+            indent = 2
+        else:
+            indent = None
+
+        print(json.dumps(payload, indent=indent, default=_json_default_handler) + "\n", file=sys.stderr)
     
     def log(self, message, *args):
         if self.debug:
             print(message % args)
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(dataset={self.dataset!r}, debug={self.debug!r})"
 
 
 def _json_default_handler(obj):

@@ -11,11 +11,13 @@ from .version import __version__
 _SKL = None
 
 
-def init(dataset=''):
+def init(dataset='', debug=False):
     global _SKL
 
     if _SKL is None:
-        _SKL = ThreadLocalClient(dataset)
+        _SKL = ThreadLocalClient(dataset=dataset, debug=debug)
+    else:
+        _log("Library already initialized: client=%s new_dataset=%s", _SKL, dataset)
 
 
 def add_context(data):
