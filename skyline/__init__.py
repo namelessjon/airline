@@ -29,6 +29,8 @@ def add_context(data):
     '''
     if _SKL and _SKL._event:
         _SKL.add_context(data=data)
+    else:
+        _log("Client or Event not initialised")
 
 def add_context_field(name, value):
     ''' Add a field to the currently active event. For example, if you are
@@ -41,6 +43,8 @@ def add_context_field(name, value):
     '''
     if _SKL and _SKL._event:
         _SKL.add_context_field(name=name, value=value)
+    else:
+        _log("Client or Event not initialised")
 
 def remove_context_field(name):
     ''' Remove a single field from the current span.
@@ -54,6 +58,8 @@ def remove_context_field(name):
 
     if _SKL and _SKL._event:
         _SKL.remove_context_field(name=name)
+    else:
+        _log("Client or Event not initialised")
 
 def add_rollup_field(name, value):
     ''' AddRollupField adds a key/value pair to the current event. If it is called repeatedly
@@ -65,6 +71,8 @@ def add_rollup_field(name, value):
 
     if _SKL and _SKL._event:
         _SKL.add_rollup_field(name=name, value=value)
+    else:
+        _log("Client or Event not initialised")
 
 @contextmanager
 def timer(name):
@@ -79,6 +87,7 @@ def timer(name):
         with _SKL._event.add_timer_field(name):
             yield
     else:
+        _log("Client or Event not initialised")
         yield
 
 
