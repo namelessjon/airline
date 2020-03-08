@@ -72,12 +72,8 @@ def add_rollup_field(name, value):
 @contextmanager
 def timer(name):
     if _SKL and _SKL._event:
-        try:
-            start = time.perf_counter()
+        with _SKL._event.add_timer_field(name):
             yield
-        finally:
-            done = time.perf_counter()
-            _SKL.add_rollup_field(_timer_name(name), (done-start)*1000)
     else:
         yield
 

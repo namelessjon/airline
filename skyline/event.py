@@ -1,5 +1,7 @@
 import datetime as dt
 from collections import defaultdict
+from contextlib import contextmanager
+import time
 
 TIMER_PREFIX = 'timers.'
 ROLLUP_PREFIX = 'rollup.'
@@ -25,6 +27,15 @@ class Event:
 
     def add_rollup_field(self, name, value):
         self._rollup_fields[name] += value
+
+    @contextmanager
+    def add_timer_field(self, name):
+        try:
+            start = time.perf_counter()
+            yield
+        finally:
+            done = time.perf_counter()
+            self.add_rollup_field(_timer_name(name), (done-start)*1000)
     
     def __str__(self):
         return json.dumps({"data": self._data, "rollups": self._rollup_fields})
