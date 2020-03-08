@@ -5,7 +5,7 @@ import skyline
 
 COLD_START = True
 
-def skyline_wrapper(_handler=None, *, add_event=True, add_response=True):
+def skyline_wrapper(_handler=None, *, add_event=True, add_response=True, init=False):
     '''Skyline decorator for Lambda functions. Expects a handler
     function with the signature:
     `def handler(event, context)`
@@ -17,12 +17,14 @@ def skyline_wrapper(_handler=None, *, add_event=True, add_response=True):
     ```
     '''
 
+
+
     def decorator_skyline(handler):
         @functools.wraps(handler)
         def _skyline_wrapper(event, context):
             global COLD_START
 
-            # don't blow up the world if the beeline has not been initialized
+            # don't blow up the world if the skyline has not been initialized
             if not skyline._SKL:
                 return handler(event, context)
 
@@ -50,6 +52,17 @@ def skyline_wrapper(_handler=None, *, add_event=True, add_response=True):
                 COLD_START = False
 
         return _skyline_wrapper
+
+
+    if init:
+        if isinstance(init, str):
+            skyline.init(dataset=init)
+        elif isinstance(init, dict):
+            skyline.init(**init)
+        elif isinstance(init, (tuple, list)):
+            skyline.init(*init)
+        else:
+            print("Don't know how to initialise with init=%r" % init)
 
     if _handler is None:
         return decorator_skyline
