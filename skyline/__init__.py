@@ -1,21 +1,15 @@
-# This code substantially copied from honeycomb's beeline python
-# Licensed under the APL
-
 import datetime
-from collections import defaultdict
 from contextlib import contextmanager
-import threading
 import functools
-import json
 import time
-import sys
 
-__version__ = '0.1.0'
+from .event import _timer_name
+from .threadlocal_client import ThreadLocalClient
+from .version import __version__
+
 
 _SKL = None
 
-TIMER_PREFIX = 'timers.'
-ROLLUP_PREFIX = 'rollup.'
 
 def init(dataset=''):
     global _SKL
@@ -115,155 +109,3 @@ def evented():
 def _log(message, *args):
     if _SKL and _SKL.debug:
         print(message % args)
-
-
-class Client():
-    def __init__(self, dataset, debug=True):
-        self.dataset = dataset
-        self.debug = debug
-
-    def add_context_field(self, name, value):
-        if self._event:
-            self._event.add_field(name, value)
-        else:
-            _log("No event found")
-
-    def add_rollup_field(self, name, value):
-        if self._event:
-            self._event.add_rollup_field(name, value)
-        else:
-            _log("No event found")
-
-    @contextmanager
-    def evented(self):
-        if self._event:
-            _log("Event already created")
-        else:
-            event = self.new_event(data={})
-            self._event = event
-        start = time.perf_counter()
-        try:
-            yield
-        except Exception as e:
-            event.add_field('exception.message', str(e))
-            event.add_field('exception.type', e.__class__.__name__)
-            raise
-        finally:
-            done = time.perf_counter()
-            event.add_field('duration_ms', (done-start)*1000)
-            self.done()
-
-    def done(self):
-        self.send(self._event)
-        self._event = None
-
-    def new_event(self, data={}):
-        return Event(data=data, client=self)
-
-    def send(self, ev):
-        '''send accepts an event and writes it to the configured output file'''
-        event_time = ev.created_at.isoformat()
-        if ev.created_at.tzinfo is None:
-            event_time += "Z"
-
-        payload = {
-            "time": event_time,
-            "dataset": ev.dataset,
-            "client": "skyline/" + __version__,
-            "data": dots_to_deep(ev.fields()),
-        }
-        print(json.dumps(payload, indent=2, default=_json_default_handler) + "\n", file=sys.stderr)
-
-class ThreadLocalClient(Client):
-    def __init__(self, *args):
-        super(ThreadLocalClient, self).__init__(*args)
-        self._state = threading.local()
-
-    @property
-    def _event(self):
-        return getattr(self._state, 'event', None)
-
-    @_event.setter
-    def _event(self, new_event):
-        self._state.event = new_event
-
-
-class Event:
-    def __init__(self, data={}, created_at=datetime.datetime.utcnow(), client=_SKL):
-        self._data = {}
-        self._client = client
-
-        if client:
-            self.dataset = client.dataset
-        else:
-            self.dataset = ''
-        self.created_at = created_at
-        self.add(data=data)
-        self._rollup_fields = defaultdict(int)
-
-    def add(self, data):
-        self._data.update(data)
-
-    def add_field(self, name, value):
-        self._data[name] = value
-
-    def add_rollup_field(self, name, value):
-        self._rollup_fields[name] += value
-    
-    def __str__(self):
-        return json.dumps(self._data)
-
-    def send(self):
-        self._client.send(self)
-
-    def rollup_fields(self):
-        return {_rollup_name(k):v for k,v in self._rollup_fields.items()}
-
-    def fields(self):
-        return {**self._data, **self.rollup_fields()}
-
-
-def dots_to_deep(dictionary):
-    new_dict = {}
-    for k, v in dictionary.items():
-        *keys, key = k.split('.')
-        d = new_dict
-        for kk in keys:
-            if kk not in d:
-                d[kk] = {}
-            d = d[kk]
-        if not isinstance(d, dict):
-            raise RuntimeError("Incorrect nesting specified: key=%s" % (k,))
-
-        if key in d:
-            raise RuntimeError("Incorrect nesting specified: key=%s" % (k,))
-
-        d[key] = v
-
-            
-
-    return new_dict
-
-
-def _timer_name(name: str):
-    if not name.startswith(TIMER_PREFIX):
-        name = TIMER_PREFIX + name
-
-    if not name.endswith('_ms'):
-        name = name + '_ms'
-    return name
-
-def _rollup_name(name: str):
-    if name.startswith(ROLLUP_PREFIX) or name.startswith(TIMER_PREFIX):
-        return name
-    else:
-        return ROLLUP_PREFIX + name
-
-
-def _json_default_handler(obj):
-    if isinstance(obj, Event):
-        return obj.fields()
-    try:
-        return str(obj)
-    except TypeError:
-        return repr(obj)

@@ -1,4 +1,4 @@
-import skyline as sl
+import skyline.client as sl
 import pytest
 
 def test_dots_to_deep_not_deep():
