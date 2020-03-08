@@ -18,6 +18,12 @@ class Client():
         else:
             self.log("No event found")
 
+    def add_context(self, data):
+        if self._event:
+            self._event.add(data=data)
+        else:
+            self.log("No event found")
+
     def add_rollup_field(self, name, value):
         if self._event:
             self._event.add_rollup_field(name, value)
