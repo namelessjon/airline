@@ -17,7 +17,7 @@ def init(dataset='', debug=False):
     if _SKL is None:
         _SKL = ThreadLocalClient(dataset=dataset, debug=debug)
     else:
-        _log("Library already initialized: client=%s new_dataset=%s", _SKL, dataset)
+        print("Library already initialized: client=%s new_dataset=%r" % (_SKL, dataset))
 
 
 def add_context(data):
