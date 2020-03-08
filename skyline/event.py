@@ -18,6 +18,7 @@ class Event:
         self.created_at = created_at
         self.add(data=data)
         self._rollup_fields = defaultdict(int)
+        self._timer_fields = defaultdict(float)
 
     def add(self, data):
         self._data.update(data)
@@ -35,10 +36,10 @@ class Event:
             yield
         finally:
             done = time.perf_counter()
-            self.add_rollup_field(_timer_name(name), (done-start)*1000)
+            self._timer_fields[name] += (done-start)*1000
     
     def __str__(self):
-        return json.dumps({"data": self._data, "rollups": self._rollup_fields})
+        return json.dumps({"data": self._data, "rollups": self._rollup_fields, "timers": self._timer_fields})
 
     def send(self):
         if self._client:
@@ -50,10 +51,13 @@ class Event:
         return {_rollup_name(k):v for k,v in self._rollup_fields.items()}
 
     def fields(self):
-        return {**self._data, **self.rollup_fields()}
+        return {**self._data, **self.rollup_fields(), **self.timer_fields()}
+
+    def timer_fields(self):
+        return {_timer_name(k):round(v, 3) for k,v in self._timer_fields.items()}
 
 def _rollup_name(name: str):
-    if name.startswith(ROLLUP_PREFIX) or name.startswith(TIMER_PREFIX):
+    if name.startswith(ROLLUP_PREFIX):
         return name
     else:
         return ROLLUP_PREFIX + name

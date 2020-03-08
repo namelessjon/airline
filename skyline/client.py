@@ -46,7 +46,7 @@ class Client():
             raise
         finally:
             done = time.perf_counter()
-            event.add_field('duration_ms', (done-start)*1000)
+            event.add_field('duration_ms', round((done-start)*1000, 3))
             self.done()
 
     def done(self):
