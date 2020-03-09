@@ -118,6 +118,20 @@ def evented():
     return wrapped
 
 
+def success():
+    """
+    helper methods for consistent success/fail statuses
+    """
+    add_context_field('status', 'SUCCESS')
+
+
+def error():
+    """
+    helper methods for consistent success/fail statuses
+    """
+    add_context_field('status', 'ERROR')
+
+
 def _log(message, *args):
     if _SKL and _SKL.debug:
         print(message % args)
