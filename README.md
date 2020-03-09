@@ -1,6 +1,8 @@
 # Skyline
 
-Lightweight wide event logging.
+Lightweight wide event logging to bring more observability to lambda functions.
+
+This is very strongly inspired by [honeycomb](https://honeycomb.io) and their [beeline](https://github.com/honeycomb/beeline-python) library.
 
 ## How?
 
