@@ -5,7 +5,7 @@ import skyline
 
 COLD_START = True
 
-def skyline_wrapper(_handler=None, *, add_event=True, add_response=True, init=False):
+def skyline_wrapper(_handler=None, *, add_event=False, add_response=False, init=False):
     '''Skyline decorator for Lambda functions. Expects a handler
     function with the signature:
     `def handler(event, context)`
