@@ -2,6 +2,7 @@ import threading
 
 from .client import Client
 
+
 class ThreadLocalClient(Client):
     def __init__(self, *args, **kwargs):
         super(ThreadLocalClient, self).__init__(*args, **kwargs)

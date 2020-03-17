@@ -5,6 +5,7 @@ import skyline
 
 COLD_START = True
 
+
 def skyline_wrapper(_handler=None, *, add_event=False, add_response=False, init=False):
     '''Skyline decorator for Lambda functions. Expects a handler
     function with the signature:
@@ -16,8 +17,6 @@ def skyline_wrapper(_handler=None, *, add_event=False, add_response=False, init=
         # ...
     ```
     '''
-
-
 
     def decorator_skyline(handler):
         @functools.wraps(handler)
@@ -52,7 +51,6 @@ def skyline_wrapper(_handler=None, *, add_event=False, add_response=False, init=
                 COLD_START = False
 
         return _skyline_wrapper
-
 
     if init:
         if isinstance(init, str):

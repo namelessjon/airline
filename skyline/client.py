@@ -75,7 +75,7 @@ class Client():
             indent = None
 
         print(json.dumps(payload, indent=indent, default=_json_default_handler) + "\n", file=sys.stderr)
-    
+
     def log(self, message, *args):
         if self.debug:
             print(message % args)
@@ -96,6 +96,7 @@ def _json_default_handler(obj):
     except TypeError:
         return repr(obj)
 
+
 def dots_to_deep(dictionary):
     new_dict = {}
     for k, v in dictionary.items():
@@ -106,13 +107,11 @@ def dots_to_deep(dictionary):
                 d[kk] = {}
             d = d[kk]
         if not isinstance(d, dict):
-            raise RuntimeError("Incorrect nesting specified: key=%s collides with key=%s" % (k,'.'.join(keys)))
+            raise RuntimeError("Incorrect nesting specified: key=%s collides with key=%s" % (k, '.'.join(keys)))
 
         if key in d:
             raise RuntimeError("Incorrect nesting specified: key=%s would overwrite nesting key" % (k,))
 
         d[key] = v
-
-            
 
     return new_dict

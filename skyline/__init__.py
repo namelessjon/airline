@@ -1,11 +1,8 @@
-import datetime
 from contextlib import contextmanager
 import functools
-import time
 
-from .event import _timer_name
 from .threadlocal_client import ThreadLocalClient
-from .version import __version__
+from .version import __version__   # noqa: F401
 
 
 _SKL = None
@@ -32,6 +29,7 @@ def add_context(data):
     else:
         _log("Client or Event not initialised")
 
+
 def add_context_field(name, value):
     ''' Add a field to the currently active event. For example, if you are
     using django and wish to add additional context to the current request
@@ -45,6 +43,7 @@ def add_context_field(name, value):
         _SKL.add_context_field(name=name, value=value)
     else:
         _log("Client or Event not initialised")
+
 
 def remove_context_field(name):
     ''' Remove a single field from the current span.
@@ -61,6 +60,7 @@ def remove_context_field(name):
     else:
         _log("Client or Event not initialised")
 
+
 def add_rollup_field(name, value):
     ''' AddRollupField adds a key/value pair to the current event. If it is called repeatedly
     on the same event, the values will be summed together.
@@ -73,6 +73,7 @@ def add_rollup_field(name, value):
         _SKL.add_rollup_field(name=name, value=value)
     else:
         _log("Client or Event not initialised")
+
 
 @contextmanager
 def timer(name):
@@ -99,9 +100,10 @@ def done():
 
     _SKL = None
 
+
 def evented():
     """Decorator for wrapping a generic function in an event.
-    
+
     The event will be sent when the function ends, possibly annotated with
     any exception raised."""
     def wrapped(fn):
