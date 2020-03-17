@@ -38,7 +38,7 @@ class Event:
             yield
         finally:
             done = time.perf_counter()
-            self._timer_fields[name] += (done-start)*1000
+            self._timer_fields[name] += (done - start) * 1000
 
     def __str__(self):
         return json.dumps({
