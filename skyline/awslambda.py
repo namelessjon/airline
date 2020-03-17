@@ -52,6 +52,15 @@ def skyline_wrapper(_handler=None, *, add_event=False, add_response=False, init=
 
         return _skyline_wrapper
 
+    init_if_possible(init)
+
+    if _handler is None:
+        return decorator_skyline
+    else:
+        return decorator_skyline(_handler)
+
+
+def init_if_possible(init):
     if init:
         if isinstance(init, str):
             skyline.init(dataset=init)
@@ -61,8 +70,3 @@ def skyline_wrapper(_handler=None, *, add_event=False, add_response=False, init=
             skyline.init(*init)
         else:
             print("Don't know how to initialise with init=%r" % init)
-
-    if _handler is None:
-        return decorator_skyline
-    else:
-        return decorator_skyline(_handler)
