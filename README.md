@@ -1,4 +1,4 @@
-# Skyline
+# airline
 
 Lightweight wide event logging to bring more observability to lambda functions.
 
@@ -9,12 +9,12 @@ This is very strongly inspired by [honeycomb](https://honeycomb.io) and their [b
 Use the decorators!
 
 ```python
-import skyline
+import airline
 
-skyline.init(dataset='your_app_name')
+airline.init(dataset='your_app_name')
 
 
-@skyline.evented()
+@airline.evented()
 def some_function(a, b)
     # do things
 ```
@@ -22,14 +22,14 @@ def some_function(a, b)
 or 
 
 ```python
-import skyline
-from skyline.awslambda import skyline_wrapper
+import airline
+from airline.awslambda import airline_wrapper
 
 
-skyline.init(dataset='function_or_app_name')
+airline.init(dataset='function_or_app_name')
 
 
-@skyline_wrapper
+@airline_wrapper
 def handler(event, context):
     # do things
 ```
@@ -52,21 +52,21 @@ Take this:
 import time
 import random
 
-import skyline
+import airline
 
-skyline.init(dataset='example')
+airline.init(dataset='example')
 
 
 
-@skyline.evented()
+@airline.evented()
 def main(a, b):
-    skyline.add_context_field("a", a)
-    skyline.add_context_field("b", b)
+    airline.add_context_field("a", a)
+    airline.add_context_field("b", b)
 
-    with skyline.timer('processing_a'):
+    with airline.timer('processing_a'):
         subfunction1(a)
 
-    with skyline.timer('processing_b'):
+    with airline.timer('processing_b'):
         subfunction1(b)
 
 
@@ -83,7 +83,7 @@ And emit this at the end
 {
   "time": "2020-03-09T09:49:43.376126Z",
   "dataset": "example",
-  "client": "skyline/0.1.0",
+  "client": "airline/0.1.0",
   "data": {
     "a": "foo",
     "b": "example_long_thing",

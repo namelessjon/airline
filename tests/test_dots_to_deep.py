@@ -1,4 +1,4 @@
-import skyline.client as sl
+import airline.client as sl
 import pytest
 
 
