@@ -37,10 +37,14 @@ def handler(event, context):
 
 ## Wide event logging?
 
-The idea is, to build up the full context of a function/script, into one wide
+The idea is to build up the full context of a function/script into one wide
 event that gets emitted at the end.  This puts all the context in one log
 message, making it very easy to run analytics on, find like errors, and a lot
-of other things.
+of other things.  A full blown observability platform like honeycomb would be
+more informative, and allows for the notion of spans and distributed tracing
+(i.e. across different (micro) services and the like).
+
+But this is a start.
 
 Take this:
 
