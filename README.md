@@ -22,9 +22,14 @@ def some_function(a, b)
 or 
 
 ```python
+import skyline
 from skyline.awslambda import skyline_wrapper
 
-@skyline_wrapper(init='lambda_function_name')
+
+skyline.init(dataset='function_or_app_name')
+
+
+@skyline_wrapper
 def handler(event, context):
     # do things
 ```
