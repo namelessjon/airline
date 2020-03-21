@@ -1,6 +1,6 @@
 # airline
 
-![tests](https://github.com/namelessjon/airline/workflows/tests/badge.svg) | ![PyPI version](https://badge.fury.io/py/airline.svg)](https://badge.fury.io/py/airline)
+![tests](https://github.com/namelessjon/airline/workflows/tests/badge.svg) | [![PyPI version](https://badge.fury.io/py/airline.svg)](https://pypi.org/project/airline/)
 
 Lightweight wide event logging to bring more observability to lambda functions.
 
