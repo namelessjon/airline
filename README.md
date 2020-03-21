@@ -1,5 +1,7 @@
 # airline
 
+![tests](https://github.com/namelessjon/airline/workflows/tests/badge.svg) | ![PyPI version](https://badge.fury.io/py/airline.svg)](https://badge.fury.io/py/airline)
+
 Lightweight wide event logging to bring more observability to lambda functions.
 
 This is very strongly inspired by [honeycomb](https://honeycomb.io) and their [beeline](https://github.com/honeycomb/beeline-python) library.
