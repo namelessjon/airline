@@ -35,8 +35,7 @@ class Client():
         if self._event:
             self.log("Event already created")
         else:
-            event = self.new_event(data={})
-            self._event = event
+            event = self.start()
         start = time.perf_counter()
         try:
             yield
@@ -50,6 +49,13 @@ class Client():
             duration = (done - start) * 1000
             event.add_field('duration_ms', round(duration, 3))
             self.done()
+
+    def start(self, event=None):
+        if event is None:
+            event = self.new_event()
+            
+        self._event = event
+        return event
 
     def done(self):
         self.send(self._event)
