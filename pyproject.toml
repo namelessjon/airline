@@ -4,13 +4,14 @@ build-backend = "flit_core.buildapi"
 
 [tool.flit.metadata]
 module = "airline"
-author = "Jonathan Stott"
+author = "namelessjon"
 author-email = "jonathan.stott@gmail.com"
 description-file="README.md"
-classifiers = ["License :: OSI Approved :: Apache Software License"]
+classifiers = ["License :: OSI Approved :: Apache Software License",  "Development Status :: 4 - Beta", "Intended Audience :: Developers" ]
 
 [tool.flit.metadata.requires-extra]
 test = [
     "pytest ~=5.3",
+    "pytest-mock ~=2.0"
 ]
 
