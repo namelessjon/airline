@@ -7,6 +7,7 @@ module = "airline"
 author = "namelessjon"
 author-email = "jonathan.stott@gmail.com"
 description-file="README.md"
+home-page = "https://github.com/namelessjon/airline"
 classifiers = ["License :: OSI Approved :: Apache Software License",  "Development Status :: 4 - Beta", "Intended Audience :: Developers" ]
 
 [tool.flit.metadata.requires-extra]
