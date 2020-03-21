@@ -57,22 +57,6 @@ def add_context_field(name, value):
         _log("Client or Event not initialised")
 
 
-def remove_context_field(name):
-    ''' Remove a single field from the current span.
-    ```
-    airline.add_context({ "first_field": "a", "second_field": "b"})
-    airline.remove_context_field("second_field")
-    Args:
-    - `name`: Name of field to remove
-    ```
-     '''
-
-    if _ARL and _ARL._event:
-        _ARL.remove_context_field(name=name)
-    else:
-        _log("Client or Event not initialised")
-
-
 def add_rollup_field(name, value):
     ''' AddRollupField adds a key/value pair to the current event. If it is called repeatedly
     on the same event, the values will be summed together.
