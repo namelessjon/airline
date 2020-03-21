@@ -53,7 +53,7 @@ class Client():
     def start(self, event=None):
         if event is None:
             event = self.new_event()
-            
+
         self._event = event
         return event
 

@@ -2,6 +2,7 @@ import pytest
 
 import airline.client
 
+
 @pytest.fixture()
 def client() -> airline.client.Client:
     client = airline.client.Client('test')
