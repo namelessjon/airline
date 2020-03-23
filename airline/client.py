@@ -30,6 +30,12 @@ class Client():
         else:
             self.log("No event found")
 
+    def attach_exception(self, err: BaseException = True, prefix: str = 'exception'):
+        if self._event:
+            self._event.attach_exception(err, prefix)
+        else:
+            self.log("No event found")
+
     @contextmanager
     def evented(self):
         if self._event:

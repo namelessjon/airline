@@ -4,6 +4,8 @@ from contextlib import contextmanager
 import json
 import time
 
+from .format_exception import format_exception
+
 TIMER_PREFIX = 'timers.'
 ROLLUP_PREFIX = 'rollup.'
 
@@ -39,6 +41,9 @@ class Event:
         finally:
             done = time.perf_counter()
             self._timer_fields[name] += (done - start) * 1000
+
+    def attach_exception(self, err: BaseException = True, prefix: str = 'exception'):
+        self.add(format_exception(err, prefix))
 
     def __str__(self):
         return json.dumps({

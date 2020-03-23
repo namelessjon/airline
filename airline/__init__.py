@@ -116,6 +116,16 @@ def evented():
     return wrapped
 
 
+def attach_exception(err: BaseException = True, prefix: str = 'exception'):
+    """
+    Attach an exception and traceback to the current event with the given prefix
+    """
+    if _ARL:
+        _ARL.attach_exception(err=err, prefix=prefix)
+    else:
+        _log("Client or Event not initialised")
+
+
 def success():
     """
     helper methods for consistent success/fail statuses

@@ -78,3 +78,25 @@ def test_send_passes_off_to_client(mocker):
     event.send()
 
     client.send.assert_called_with(event)
+
+
+def test_attach_exception_works(event):
+    try:
+        raise RuntimeError('example')
+    except RuntimeError as e:
+        event.attach_exception(e)
+
+    assert 'exception.type' in event.fields()
+    assert 'exception.message' in event.fields()
+    assert 'exception.traceback' in event.fields()
+
+
+def test_attach_exception_works2(event):
+    try:
+        raise RuntimeError('example')
+    except RuntimeError as e:
+        event.attach_exception(e, prefix='bar')
+
+    assert 'bar.type' in event.fields()
+    assert 'bar.message' in event.fields()
+    assert 'bar.traceback' in event.fields()
