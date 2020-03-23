@@ -36,7 +36,7 @@ def add_context(data):
     Args:
     - `data`: dictionary of field names (strings) to field values to add
     '''
-    if _ARL and _ARL._event:
+    if _ARL:
         _ARL.add_context(data=data)
     else:
         _log("Client or Event not initialised")
@@ -51,7 +51,7 @@ def add_context_field(name, value):
     - `name`: Name of field to add
     - `value`: Value of new field
     '''
-    if _ARL and _ARL._event:
+    if _ARL:
         _ARL.add_context_field(name=name, value=value)
     else:
         _log("Client or Event not initialised")
@@ -65,7 +65,7 @@ def add_rollup_field(name, value):
     - `value`: Numeric (float) value of new field
     '''
 
-    if _ARL and _ARL._event:
+    if _ARL:
         _ARL.add_rollup_field(name=name, value=value)
     else:
         _log("Client or Event not initialised")
@@ -80,8 +80,8 @@ def timer(name):
     It is especially useful for doing things like adding the duration spent talking
     to a specific external service - eg database time
     """
-    if _ARL and _ARL._event:
-        with _ARL._event.add_timer_field(name):
+    if _ARL:
+        with _ARL.add_timer_field(name):
             yield
     else:
         _log("Client or Event not initialised")

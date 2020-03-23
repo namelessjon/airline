@@ -30,6 +30,15 @@ class Client():
         else:
             self.log("No event found")
 
+    @contextmanager
+    def add_timer_field(self, name: str):
+        if self._event:
+            with self._event.add_timer_field(name):
+                yield
+        else:
+            self.log("No event found")
+            yield
+
     def attach_exception(self, err: BaseException = True, prefix: str = 'exception'):
         if self._event:
             self._event.attach_exception(err, prefix)
