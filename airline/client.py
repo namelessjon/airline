@@ -47,8 +47,7 @@ class Client():
             yield
         except Exception as e:
             event.add_field('status', 'ERROR')
-            event.add_field('exception.message', str(e))
-            event.add_field('exception.type', e.__class__.__name__)
+            event.attach_exception(e)
             raise
         finally:
             done = time.perf_counter()
