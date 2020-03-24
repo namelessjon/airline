@@ -126,18 +126,25 @@ def attach_exception(err: BaseException = True, prefix: str = 'exception'):
         _log("Client or Event not initialised")
 
 
+def set_status(status: str):
+    """
+    Set the status field on the current event
+    """
+    add_context_field('status', status)
+
+
 def success():
     """
     helper methods for consistent success/fail statuses
     """
-    add_context_field('status', 'SUCCESS')
+    set_status('SUCCESS')
 
 
 def error():
     """
     helper methods for consistent success/fail statuses
     """
-    add_context_field('status', 'ERROR')
+    set_status('ERROR')
 
 
 def _log(message, *args):
