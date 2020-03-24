@@ -12,6 +12,11 @@ But this is a start.
 """
 from contextlib import contextmanager
 import functools
+from typing import (
+    Dict,
+    Any,
+    Optional,
+)
 
 from .threadlocal_client import ThreadLocalClient
 from .version import __version__   # noqa: F401
@@ -20,7 +25,7 @@ from .version import __version__   # noqa: F401
 _ARL = None
 
 
-def init(dataset='', debug=False):
+def init(dataset: str = '', debug=False):
     global _ARL
 
     if _ARL is None:
@@ -29,7 +34,7 @@ def init(dataset='', debug=False):
         print("Library already initialized: client=%s new_dataset=%r" % (_ARL, dataset))
 
 
-def add_context(data):
+def add_context(data: Dict[str, Any]):
     '''Similar to add_context_field(), but allows you to add a number of name:value pairs
     to the currently active event at the same time.
     `airline.add_context({ "first_field": "a", "second_field": "b"})`
@@ -42,7 +47,7 @@ def add_context(data):
         _log("Client or Event not initialised")
 
 
-def add_context_field(name, value):
+def add_context_field(name: str, value: Any):
     ''' Add a field to the currently active event. For example, if you are
     using django and wish to add additional context to the current request
     before it is sent:
@@ -57,7 +62,7 @@ def add_context_field(name, value):
         _log("Client or Event not initialised")
 
 
-def add_rollup_field(name, value):
+def add_rollup_field(name: str, value: Any):
     ''' AddRollupField adds a key/value pair to the current event. If it is called repeatedly
     on the same event, the values will be summed together.
     Args:
@@ -72,7 +77,7 @@ def add_rollup_field(name, value):
 
 
 @contextmanager
-def timer(name):
+def timer(name: str):
     """ Timer yields block (think `with` statement) and counts the time
      taken during that block.  The time is added to the event.  If there
      are multiple invocations with the same name, these will be added up
@@ -116,7 +121,7 @@ def evented():
     return wrapped
 
 
-def attach_exception(err: BaseException = True, prefix: str = 'exception'):
+def attach_exception(err: Optional[BaseException] = None, prefix: str = 'exception'):
     """
     Attach an exception and traceback to the current event with the given prefix
     """

@@ -1,11 +1,13 @@
 import sys
 import traceback
-
+from typing import (
+    Optional
+)
 
 FS_NAMES = ('filename', 'lineno', 'name',)
 
 
-def format_exception(exception: BaseException = True, prefix: str = 'exception') -> dict:
+def format_exception(exception: Optional[BaseException] = None, prefix: str = 'exception') -> dict:
     cls, msg, tb = _extract_exception(exception)
 
     return {
@@ -19,7 +21,7 @@ def _fs_to_dict(fs: traceback.FrameSummary, fs_names=FS_NAMES):
     return {n: getattr(fs, n) for n in fs_names}
 
 
-def _extract_exception(exception: BaseException = True):
+def _extract_exception(exception: Optional[BaseException] = None):
     if isinstance(exception, BaseException):
         return exception.__class__, exception, exception.__traceback__
     elif isinstance(exception, tuple):

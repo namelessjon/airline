@@ -2,29 +2,35 @@ from contextlib import contextmanager
 import json
 import time
 import sys
+from typing import (
+    Optional,
+    Dict,
+    Any,
+    Union,
+)
 
 from .event import Event
 from .version import __version__
 
 
 class Client():
-    def __init__(self, dataset, debug=False):
+    def __init__(self, dataset: str, debug=False):
         self.dataset = dataset
         self.debug = debug
 
-    def add_context_field(self, name, value):
+    def add_context_field(self, name: str, value: Any):
         if self._event:
             self._event.add_field(name, value)
         else:
             self.log("No event found")
 
-    def add_context(self, data):
+    def add_context(self, data: Dict[str, Any]):
         if self._event:
             self._event.add(data=data)
         else:
             self.log("No event found")
 
-    def add_rollup_field(self, name, value):
+    def add_rollup_field(self, name: str, value: Union[int, float]):
         if self._event:
             self._event.add_rollup_field(name, value)
         else:
@@ -39,7 +45,7 @@ class Client():
             self.log("No event found")
             yield
 
-    def attach_exception(self, err: BaseException = True, prefix: str = 'exception'):
+    def attach_exception(self, err: Optional[BaseException] = None, prefix: str = 'exception'):
         if self._event:
             self._event.attach_exception(err, prefix)
         else:
@@ -78,7 +84,7 @@ class Client():
     def new_event(self, data={}):
         return Event(data=data, client=self)
 
-    def send(self, ev):
+    def send(self, ev: Event):
         '''send accepts an event and writes it to the configured output file'''
         event_time = ev.created_at.isoformat()
         if ev.created_at.tzinfo is None:
@@ -91,7 +97,7 @@ class Client():
             "data": dots_to_deep(ev.fields()),
         }
         if self.debug:
-            indent = 2
+            indent: Optional[int] = 2
         else:
             indent = None
 
