@@ -20,7 +20,7 @@ ROLLUP_PREFIX = 'rollup.'
 
 class Event:
     def __init__(self, data: Dict[str, Any] = {}, created_at=dt.datetime.utcnow(), client=None):
-        self._data = data
+        self._data: Dict[str, Any] = {}
         self._client = client
 
         if client:
