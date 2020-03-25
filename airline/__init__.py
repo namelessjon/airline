@@ -102,7 +102,7 @@ def done():
     _ARL = None
 
 
-def evented():
+def evented(**extra_context):
     """Decorator for wrapping a generic function in an event.
 
     The event will be sent when the function ends, possibly annotated with
@@ -112,6 +112,8 @@ def evented():
         def inner(*args, **kwargs):
             if _ARL:
                 with _ARL.evented():
+                    if extra_context:
+                        add_context(extra_context)
                     return fn(*args, **kwargs)
             else:
                 return fn(*args, **kwargs)
