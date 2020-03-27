@@ -123,6 +123,34 @@ def evented(**extra_context):
     return wrapped
 
 
+def timed(add_count=True, **extra_context):
+    """
+    Decorator to turn a function call into a timed function call.
+    The total duration of all calls to the function, and the number
+    of calls will be attached as fields to the event.
+    Also, additional context can be provided.
+    """
+    def wrapped(fn):
+        @functools.wraps(fn)
+        def inner(*args, **kwargs):
+            if _ARL:
+                name = fn.__name__
+                timer_name = f"{name}_duration"
+                count_name = f"{name}_calls"
+                with _ARL.add_timer_field(timer_name):
+                    if add_count:
+                        _ARL.add_rollup_field(count_name, 1)
+                    if extra_context:
+                        add_context(extra_context)
+                    return fn(*args, **kwargs)
+            else:
+                return fn(*args, **kwargs)
+
+        return inner
+
+    return wrapped
+
+
 def attach_exception(err: Optional[BaseException] = None, prefix: str = 'exception'):
     """
     Attach an exception and traceback to the current event with the given prefix
