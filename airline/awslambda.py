@@ -38,7 +38,7 @@ def airline_wrapper(_handler=None, *, add_event=False, add_response=False):
                     })
 
                     if add_event:
-                        airline.add_context("app.event", event)
+                        airline.add_context_field("app.event", event)
 
                     resp = handler(event, context)
 
