@@ -43,8 +43,6 @@ def add_context(data: Dict[str, Any]):
     '''
     if _ARL:
         _ARL.add_context(data=data)
-    else:
-        _log("Client or Event not initialised")
 
 
 def add_context_field(name: str, value: Any):
@@ -58,8 +56,6 @@ def add_context_field(name: str, value: Any):
     '''
     if _ARL:
         _ARL.add_context_field(name=name, value=value)
-    else:
-        _log("Client or Event not initialised")
 
 
 def add_rollup_field(name: str, value: Any):
@@ -72,8 +68,6 @@ def add_rollup_field(name: str, value: Any):
 
     if _ARL:
         _ARL.add_rollup_field(name=name, value=value)
-    else:
-        _log("Client or Event not initialised")
 
 
 @contextmanager
@@ -89,7 +83,6 @@ def timer(name: str):
         with _ARL.add_timer_field(name):
             yield
     else:
-        _log("Client or Event not initialised")
         yield
 
 
@@ -157,8 +150,6 @@ def attach_exception(err: Optional[BaseException] = None, prefix: str = 'excepti
     """
     if _ARL:
         _ARL.attach_exception(err=err, prefix=prefix)
-    else:
-        _log("Client or Event not initialised")
 
 
 def set_status(status: str):
@@ -180,8 +171,3 @@ def error():
     helper methods for consistent success/fail statuses
     """
     set_status('ERROR')
-
-
-def _log(message, *args):
-    if _ARL and _ARL.debug:
-        print(message % args)
