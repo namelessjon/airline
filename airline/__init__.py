@@ -12,6 +12,7 @@ But this is a start.
 """
 from contextlib import contextmanager
 import functools
+import logging
 import os
 from typing import (
     Dict,
@@ -26,13 +27,16 @@ from .version import __version__   # noqa: F401
 _ARL = None
 
 
+log = logging.getLogger('airline')
+
+
 def init(dataset: str = '', debug=False):
     global _ARL
 
     if _ARL is None:
         _ARL = ThreadLocalClient(dataset=dataset, debug=debug)
     else:
-        print("Library already initialized: client=%s new_dataset=%r" % (_ARL, dataset))
+        log.warning("Library already initialized: client=%r new_dataset=%s", _ARL, dataset)
 
 
 def add_context(data: Dict[str, Any]):

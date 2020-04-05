@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 import json
+import logging
 import time
 import sys
 from typing import (
@@ -11,6 +12,9 @@ from typing import (
 
 from .event import Event
 from .version import __version__
+
+
+log = logging.getLogger('airline')
 
 
 class Client():
@@ -105,7 +109,7 @@ class Client():
 
     def log(self, message, *args):
         if self.debug:
-            print(message % args)
+            log.debug(message, *args)
 
     def __repr__(self):
         return "{cls}(dataset={dataset!r}, debug={debug!r})".format(
