@@ -12,6 +12,7 @@ But this is a start.
 """
 from contextlib import contextmanager
 import functools
+import os
 from typing import (
     Dict,
     Any,
@@ -68,6 +69,18 @@ def add_rollup_field(name: str, value: Any):
 
     if _ARL:
         _ARL.add_rollup_field(name=name, value=value)
+
+
+def add_environment_variable(name: str, env_var: str):
+    """
+    AddEnvironmentVariable adds the value of an environment variable to the current event.
+    Args:
+    - `name`: Name of the field to add
+    - `env_var`: Name of the environment variable
+    """
+
+    if _ARL:
+        _ARL.add_context_field(name=name, value=os.getenv(env_var))
 
 
 @contextmanager
