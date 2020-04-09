@@ -59,10 +59,13 @@ def _add_role_info():
         return
 
     full_uri = f"http://169.254.170.2{uri}"
-    data = _fetch_parse_uri(full_uri)
+    try:
+        data = _fetch_parse_uri(full_uri)
 
-    airline.add_context_field('aws.role_arn', data.get('RoleArn'))
-    airline.add_context_field('aws.access_key_id', data.get('AccessKeyId'))
+        airline.add_context_field('aws.role_arn', data.get('RoleArn'))
+        airline.add_context_field('aws.access_key_id', data.get('AccessKeyId'))
+    except Exception:
+        pass
 
 
 def _fetch_parse_uri(uri, attempts=5):
